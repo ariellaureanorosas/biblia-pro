@@ -48,7 +48,7 @@ jobs:
           echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Publicar artifact do plugin
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.manifest.outputs.slug }}-${{ steps.manifest.outputs.version }}
           path: release/*.zip
