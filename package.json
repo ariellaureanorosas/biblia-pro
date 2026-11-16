@@ -29,7 +29,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:component": "vitest run --project component",
+    "test:component": "vitest run --config vitest.component.config.ts",
     "test:watch": "vitest",
     "package": "npm run build && node scripts/package.mjs",
     "dev": "concurrently -k \"npm:watch:code\" \"npm:watch:ui\"",

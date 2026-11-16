@@ -10,12 +10,10 @@ export default defineConfig({
     },
   },
   test: {
-    // Todos os testes (unidade + componente) rodam em jsdom.
-    // Os testes puros (bibleRefs.test.ts) não precisam de DOM, mas jsdom não
-    // prejudica; apenas adiciona um pouco de overhead no setup.
-    environment: 'jsdom',
-    globals: true,
-    setupFiles: ['./src/setupTests.ts'],
-    include: ['src/**/*.test.{ts,tsx}', 'src/**/*.component.test.{ts,tsx}'],
+    // Testes de unidade: Node puro, sem DOM. Evita problemas de compatibilidade
+    // do jsdom com o undici no Node 24 do GitHub Actions.
+    include: ['src/**/*.test.{ts,tsx}'],
+    exclude: ['src/**/*.component.test.{ts,tsx}'],
+    environment: 'node',
   },
 });
