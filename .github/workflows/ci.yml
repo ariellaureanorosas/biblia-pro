@@ -44,13 +44,13 @@ jobs:
       - name: Ler versão do manifesto
         id: manifest
         run: |
-          echo "id=$(node -p "require('./manifest.json').id")" >> "$GITHUB_OUTPUT"
+          echo "slug=$(node -p "require('./package.json').name")" >> "$GITHUB_OUTPUT"
           echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Publicar artifact do plugin
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.manifest.outputs.id }}-${{ steps.manifest.outputs.version }}
+          name: ${{ steps.manifest.outputs.slug }}-${{ steps.manifest.outputs.version }}
           path: release/*.zip
           if-no-files-found: error
           retention-days: 14

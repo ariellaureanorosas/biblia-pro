@@ -48,7 +48,7 @@ jobs:
       - name: Ler nome do plugin
         id: manifest
         run: |
-          echo "id=$(node -p "require('./manifest.json').id")" >> "$GITHUB_OUTPUT"
+          echo "slug=$(node -p "require('./package.json').name")" >> "$GITHUB_OUTPUT"
           echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Preparar notas da release
@@ -70,5 +70,5 @@ jobs:
           tag_name: ${{ github.ref_name }}
           body_path: ${{ steps.notes.outputs.body_path }}
           generate_release_notes: ${{ steps.notes.outputs.body_path == '' }}
-          files: release/${{ steps.manifest.outputs.id }}-${{ steps.manifest.outputs.version }}.zip
+          files: release/${{ steps.manifest.outputs.slug }}-${{ steps.manifest.outputs.version }}.zip
           fail_on_unmatched_files: true

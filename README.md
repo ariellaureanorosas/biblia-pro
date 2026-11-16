@@ -50,7 +50,7 @@
 
 ### Pelo pacote `.zip` (recomendado)
 
-1. Baixe o pacote mais recente em [**Releases**](https://github.com/ariellaureanorosas/biblia-pro/releases) — `com.beone.biblia-pro-1.0.0.zip`.
+1. Baixe o pacote mais recente em [**Releases**](https://github.com/ariellaureanorosas/biblia-pro/releases) — `biblia-pro-1.0.0.zip`.
 2. No Spresenter, abra **Configurações → Plugins**.
 3. Instale o `.zip` e ative **Bíblia PRO**.
 4. Abra o painel pelo ícone `sparkles` na barra lateral.
@@ -149,7 +149,7 @@ npm ci          # instala as dependências (SDK local em sdk/)
 npm run dev     # build em watch (código + UI)
 npm run build   # build de produção
 npm run typecheck
-npm run package # gera release/<id>-<versão>.zip
+npm run package # gera release/<nome>-<versão>.zip
 ```
 
 | Script | Descrição |
@@ -157,7 +157,7 @@ npm run package # gera release/<id>-<versão>.zip
 | `npm run dev` | Build em modo watch do código e da UI, em paralelo |
 | `npm run build` | `dist/code.js` + `dist/ui/` |
 | `npm run typecheck` | Verificação de tipos com TypeScript |
-| `npm run package` | Build + pacote `release/<id>-<versão>.zip` |
+| `npm run package` | Build + pacote `release/<nome>-<versão>.zip` |
 
 ### Estrutura
 

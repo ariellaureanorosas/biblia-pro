@@ -14,8 +14,8 @@ A versão aparece em **dois lugares** e precisa ficar sincronizada:
 - `manifest.json` → `version`
 - `package.json` → `version`
 
-O nome do zip é derivado do manifesto: `release/<id>-<versão>.zip`, por exemplo
-`com.beone.biblia-pro-1.0.0.zip`.
+O nome do zip é derivado do `name` do `package.json` (ex.: `biblia-pro`):
+`release/<nome>-<versão>.zip`, por exemplo `biblia-pro-1.0.0.zip`.
 
 ## Fluxo de release
 
@@ -40,7 +40,7 @@ npm run build
 npm run package
 ```
 
-Confirme o zip em `release/com.beone.biblia-pro-<versão>.zip`.
+Confirme o zip em `release/biblia-pro-<versão>.zip`.
 
 ### 3. Commita e cria a tag
 
@@ -69,7 +69,7 @@ O workflow `.github/workflows/release.yml` é disparado por tags `v*` e:
 Se precisar publicar manualmente:
 
 ```bash
-gh release create v1.0.1 release/com.beone.biblia-pro-1.0.1.zip \
+gh release create v1.0.1 release/biblia-pro-1.0.1.zip \
   --title "Bíblia PRO v1.0.1" \
   --notes-file CHANGELOG.md
 ```

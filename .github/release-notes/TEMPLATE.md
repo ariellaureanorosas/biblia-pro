@@ -27,7 +27,7 @@
 
 ## 🚀 Instalação
 
-1. Baixe o arquivo **`com.beone.biblia-pro-X.Y.Z.zip`** abaixo.
+1. Baixe o arquivo **`biblia-pro-X.Y.Z.zip`** abaixo.
 2. No Spresenter, abra **Configurações → Plugins**.
 3. Instale o `.zip` e ative **Bíblia PRO**.
 

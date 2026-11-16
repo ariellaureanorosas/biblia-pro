@@ -27,7 +27,7 @@ O SDK de plugins é instalado a partir de `sdk/spresenter-plugin-sdk.tgz`
 | `npm run dev` | Build em modo watch do código e da UI, em paralelo. |
 | `npm run build` | Build de produção: `dist/code.js` + `dist/ui/`. |
 | `npm run typecheck` | `tsc --noEmit` em todo o projeto. |
-| `npm run package` | `build` + zip em `release/<id>-<versão>.zip`. |
+| `npm run package` | `build` + zip em `release/<nome>-<versão>.zip`. |
 | `npm run watch:code` | Watch apenas da thread de lógica. |
 | `npm run watch:ui` | Watch apenas da UI. |
 
@@ -46,7 +46,7 @@ O SDK de plugins é instalado a partir de `sdk/spresenter-plugin-sdk.tgz`
 npm run package
 ```
 
-Instale `release/com.beone.biblia-pro-1.0.0.zip` em **Configurações → Plugins**.
+Instale `release/biblia-pro-1.0.0.zip` em **Configurações → Plugins**.
 
 ## Build por dentro
 

@@ -1,4 +1,4 @@
-// Packages the plugin for distribution: produces release/<id>-<version>.zip
+// Packages the plugin for distribution: produces release/<name>-<version>.zip
 // containing only what the installer needs — manifest.json at the archive root
 // plus the built dist/ (and README/LICENSE when present). Run `npm run package`
 // (it builds first, then zips). Cross-platform via adm-zip; no system `zip`.
@@ -9,6 +9,7 @@ import AdmZip from 'adm-zip';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const manifestPath = path.join(root, 'manifest.json');
+const packagePath = path.join(root, 'package.json');
 
 if (!fs.existsSync(manifestPath)) {
   console.error('manifest.json not found in', root);
@@ -21,6 +22,11 @@ if (!id || !version) {
   console.error('manifest.json must define "id" and "version".');
   process.exit(1);
 }
+
+// Nome amigável do pacote: usa o `name` do package.json (ex.: "biblia-pro").
+// Sem ele, cai no último segmento do id (ex.: "com.beone.biblia-pro" → "biblia-pro").
+const pkg = fs.existsSync(packagePath) ? JSON.parse(fs.readFileSync(packagePath, 'utf-8')) : {};
+const slug = String(pkg.name || id.split('.').pop() || id);
 
 // dist/ must exist. `npm run package` builds first, but guard for a bare run.
 const distDir = path.join(root, 'dist');
@@ -39,6 +45,11 @@ for (const extra of ['README.md', 'LICENSE']) {
 
 const outDir = path.join(root, 'release');
 fs.mkdirSync(outDir, { recursive: true });
-const outFile = path.join(outDir, `${id}-${version}.zip`);
+const outFile = path.join(outDir, `${slug}-${version}.zip`);
 zip.writeZip(outFile);
+
+// Remove o pacote antigo no formato <id>-<versão>.zip, se existir.
+const legacy = path.join(outDir, `${id}-${version}.zip`);
+if (legacy !== outFile && fs.existsSync(legacy)) fs.rmSync(legacy);
+
 console.log(`Packaged ${path.relative(root, outFile)}`);

@@ -7,6 +7,11 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## [Não publicado]
 
+### Alterado
+
+- Pacote de distribuição renomeado para `biblia-pro-<versão>.zip`, usando o
+  `name` do `package.json` como base.
+
 ### Documentação
 
 - README redesenhado com banner, capturas reais do painel e tabelas de
