@@ -1,0 +1,23 @@
+{
+  "id": "com.beone.biblia-pro",
+  "name": "Bíblia PRO",
+  "version": "1.0.0",
+  "description": "Bíblia de estudo, favoritos e projeção para o Spresenter: busque, marque versículos e projete com um clique.",
+  "author": "Ariel Laureano Rosas",
+  "minAppVersion": "0.3.45",
+  "sdk": "0.3.45",
+  "main": "dist/code.js",
+  "ui": "dist/ui/index.html",
+  "permissions": [
+    "outputs:read",
+    "live:read",
+    "live:write"
+  ],
+  "panels": [
+    {
+      "id": "main",
+      "title": "Bíblia PRO",
+      "icon": "sparkles"
+    }
+  ]
+}

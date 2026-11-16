@@ -1,0 +1,675 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  margin: 0;
+  background: var(--sp-bg, #12151a);
+}
+
+/* ── Versículos Favoritos — estilos do painel ───────────────────────────────
+   Usa os tokens do UI kit (--sp-*) para combinar com o app. */
+
+.vf {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--sp-bg);
+  color: var(--sp-text);
+  font-family: var(--sp-font);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+.vf-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px 14px 8px;
+}
+
+/* Cabeçalho */
+.vf-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.vf-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 650; }
+.vf-title svg { color: var(--sp-text-muted); }
+.vf-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--sp-bg-inset); color: var(--sp-text-faint); border: 1px solid var(--sp-border);
+}
+.vf-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.vf-badge.is-live { color: #fff; background: var(--sp-danger); border-color: transparent; }
+.vf-badge.is-live::before { animation: vf-pulse 1.4s ease-in-out infinite; }
+@keyframes vf-pulse { 50% { opacity: 0.25; } }
+
+.vf-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--sp-text-faint);
+}
+.vf-hint { font-size: 11.5px; line-height: 1.45; color: var(--sp-text-muted); }
+.vf-hint b { color: var(--sp-text); font-weight: 600; }
+
+/* Botões */
+.vf-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 34px; padding: 0 12px; border-radius: 9px;
+  border: 1px solid var(--sp-border-strong); background: var(--sp-bg-elevated);
+  color: var(--sp-text); font: inherit; font-weight: 600; cursor: pointer; white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, transform 0.05s;
+}
+.vf-btn:hover { background: var(--sp-surface-hover); }
+.vf-btn:active { transform: scale(0.98); }
+.vf-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+.vf-btn.is-primary { background: var(--sp-primary); border-color: transparent; color: #fff; }
+.vf-btn.is-primary:hover { background: var(--sp-primary-hover); }
+.vf-btn.is-live { background: var(--sp-danger); border-color: transparent; color: #fff; }
+.vf-btn.is-ghost { background: transparent; border-color: transparent; color: var(--sp-text-muted); }
+.vf-btn.is-ghost:hover { color: var(--sp-text); background: var(--sp-surface-hover); }
+.vf-btn.is-icon { width: 30px; height: 30px; padding: 0; border-radius: 8px; }
+.vf-btn.is-block { width: 100%; height: 42px; font-size: 14px; }
+
+/* Campos */
+.vf input[type='text'],
+.vf select {
+  height: 34px; padding: 0 10px; border-radius: 9px;
+  border: 1px solid var(--sp-border-strong); background: var(--sp-bg-inset);
+  color: var(--sp-text); font: inherit; outline: none; min-width: 0;
+}
+.vf input:focus,
+.vf select:focus { border-color: var(--sp-primary); box-shadow: 0 0 0 3px var(--sp-focus-ring); }
+
+/* Pregações (listas) */
+.vf-lists { display: flex; gap: 6px; align-items: center; }
+.vf-lists select { flex: 1; font-weight: 600; }
+
+/* Seletor da Bíblia: livro → capítulo → versículos */
+.vf-picker {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 12px; border-radius: 14px;
+  background: var(--sp-bg-inset); border: 1px solid var(--sp-border);
+}
+.vf-picker-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.vf-picker-head select { width: 92px; font-weight: 700; }
+.vf-crumbs { display: flex; align-items: center; gap: 4px; min-width: 0; flex-wrap: wrap; color: var(--sp-text-faint); }
+.vf-crumbs button {
+  border: 0; background: none; padding: 3px 6px; border-radius: 6px;
+  font: inherit; font-weight: 600; color: var(--sp-text-muted); cursor: pointer;
+}
+.vf-crumbs button:hover { color: var(--sp-text); background: var(--sp-surface-hover); }
+.vf-crumbs button.is-on { color: var(--sp-text); }
+.vf-shortcut {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 4px 0 10px; border-radius: 9px;
+  border: 1px solid var(--sp-border-strong); background: var(--sp-bg);
+  color: var(--sp-text-faint);
+}
+.vf-shortcut:focus-within { border-color: var(--sp-primary); box-shadow: 0 0 0 3px var(--sp-focus-ring); }
+.vf .vf-shortcut input { flex: 1; border: 0; background: transparent; padding: 0; box-shadow: none; }
+
+/* Busca rápida — pop-up igual ao Spotlight do app */
+.vf-spot { position: relative; }
+.vf-spot-field { position: relative; flex: 1; min-width: 0; display: flex; }
+.vf .vf-spot-field input { flex: 1; width: 100%; border: 0; background: transparent; padding: 0; box-shadow: none; position: relative; }
+.vf-spot-ghost {
+  position: absolute; inset: 0; display: flex; align-items: center;
+  white-space: pre; overflow: hidden; pointer-events: none;
+  color: var(--sp-text-faint); opacity: 0.6;
+}
+.vf-kbd {
+  display: inline-block; padding: 1px 5px; border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px;
+  background: var(--sp-bg-elevated); border: 1px solid var(--sp-border); color: var(--sp-text-faint);
+}
+.vf-spot-pop {
+  position: absolute; z-index: 30; top: calc(100% + 6px); left: 0; right: 0;
+  display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 12px; border: 1px solid var(--sp-border-strong);
+  background: var(--sp-bg-elevated); box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+.vf-spot-list { position: relative; max-height: 320px; overflow-y: auto; padding: 4px 0; }
+.vf-spot-msg { padding: 12px 14px; font-size: 12px; color: var(--sp-text-faint); text-align: center; }
+.vf-spot-row {
+  width: 100%; display: flex; align-items: flex-start; gap: 10px;
+  padding: 7px 12px; border: 0; border-left: 2px solid transparent;
+  background: transparent; color: var(--sp-text); font: inherit; text-align: left; cursor: pointer;
+}
+.vf-spot-row.is-on { background: color-mix(in srgb, var(--sp-primary) 20%, transparent); border-left-color: var(--sp-primary); }
+.vf-spot-ico {
+  width: 28px; height: 28px; flex-shrink: 0; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--sp-bg-inset); color: var(--sp-text-faint);
+}
+.vf-spot-num {
+  width: 22px; flex-shrink: 0; text-align: right; padding-top: 1px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; color: var(--sp-text-faint);
+}
+.vf-spot-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.vf-spot-meta { font-size: 11px; color: var(--sp-text-muted); }
+.vf-spot-meta b { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 600; text-transform: uppercase; color: var(--sp-text-faint); }
+.vf-spot-text {
+  font-size: 12.5px; line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.vf-spot-text.is-one { -webkit-line-clamp: 1; }
+.vf-spot-dim { color: var(--sp-text-faint); }
+.vf-spot-kind {
+  align-self: center; flex-shrink: 0; font-size: 9.5px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--sp-text-faint); opacity: 0.7;
+}
+.vf-spot-keys { align-self: center; flex-shrink: 0; display: flex; gap: 3px; }
+.vf-spot-foot {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px;
+  padding: 7px 12px; border-top: 1px solid var(--sp-border);
+  font-size: 10.5px; color: var(--sp-text-faint);
+}
+.vf-error {
+  padding: 8px 10px; border-radius: 8px; font-size: 12px;
+  background: rgba(231, 76, 60, 0.12); color: #ff9b91;
+}
+.vf-sec { display: flex; flex-direction: column; gap: 6px; }
+.vf-sec-title { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sp-text-faint); }
+.vf-books { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 4px; }
+.vf-book {
+  height: 32px; padding: 0 8px; border-radius: 8px; text-align: left;
+  border: 1px solid var(--sp-border); background: var(--sp-bg-elevated);
+  color: var(--sp-text); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.vf-book:hover { border-color: var(--sp-primary); background: rgba(72, 52, 212, 0.14); }
+.vf-nums { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 4px; }
+.vf-num {
+  height: 38px; border-radius: 8px;
+  border: 1px solid var(--sp-border); background: var(--sp-bg-elevated);
+  color: var(--sp-text); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.vf-num:hover { border-color: var(--sp-primary); background: rgba(72, 52, 212, 0.14); }
+.vf-verses-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.vf-verses { display: flex; flex-direction: column; gap: 2px; max-height: 320px; overflow-y: auto; margin: 0 -4px; padding: 0 4px; }
+.vf-verse {
+  display: flex; align-items: flex-start; gap: 4px; width: 100%;
+  border-radius: 9px; border: 1px solid transparent;
+}
+.vf-verse:hover { background: var(--sp-bg-elevated); }
+.vf-verse.is-on { background: rgba(72, 52, 212, 0.16); border-color: rgba(72, 52, 212, 0.6); }
+.vf-verse-pick {
+  flex: 1; display: flex; align-items: flex-start; gap: 10px; min-width: 0;
+  padding: 7px 4px 7px 8px; border: 0; background: none;
+  color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.vf-star {
+  flex: none; display: grid; place-items: center;
+  width: 34px; height: 34px; margin: 2px 2px 0 0; border-radius: 9px;
+  border: 0; background: transparent; color: var(--sp-text-faint); cursor: pointer;
+  transition: color 0.15s, background 0.15s, transform 0.1s;
+}
+.vf-star:hover { color: #fbbf24; background: rgba(251, 191, 36, 0.12); }
+.vf-star:active { transform: scale(0.88); }
+.vf-star.is-on { color: #fbbf24; }
+.vf-verse-box {
+  flex: none; display: grid; place-items: center;
+  width: 24px; height: 24px; border-radius: 7px;
+  border: 1px solid var(--sp-border-strong); color: var(--sp-text-muted);
+  font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.vf-verse.is-on .vf-verse-box { background: var(--sp-primary); border-color: transparent; color: #fff; }
+.vf-verse-text { line-height: 1.45; color: var(--sp-text); }
+
+/* Favoritos — etiquetas lado a lado */
+.vf-favs { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 4px; }
+.vf-fav {
+  position: relative; display: inline-flex; align-items: center;
+  border-radius: 8px; border: 1px solid var(--sp-border-strong); background: var(--sp-bg-elevated);
+  transition: border-color 0.15s, background 0.15s;
+}
+.vf-fav:hover { border-color: var(--sp-primary); background: rgba(72, 52, 212, 0.14); }
+.vf-fav.is-live { border-color: var(--sp-danger); background: rgba(231, 76, 60, 0.16); }
+.vf-fav-main {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 28px; padding: 0 9px;
+  border: 0; background: none; color: inherit; font: inherit; cursor: pointer; white-space: nowrap;
+}
+.vf-fav-ref { font-weight: 650; font-size: 12.5px; }
+.vf-fav-ver { font-size: 9px; font-weight: 700; letter-spacing: 0.04em; color: var(--sp-text-faint); }
+.vf-fav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sp-danger); animation: vf-pulse 1.4s ease-in-out infinite; }
+/* Mover/excluir: só no hover, flutuando no canto (não empurra as vizinhas). */
+.vf-fav-tools {
+  position: absolute; z-index: 2; top: -11px; right: -6px;
+  display: none; align-items: center; gap: 1px; padding: 2px;
+  border-radius: 7px; background: #2a2f3a; border: 1px solid var(--sp-border-strong);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.vf-fav:hover .vf-fav-tools,
+.vf-fav:focus-within .vf-fav-tools { display: inline-flex; }
+.vf-fav-tools button {
+  display: grid; place-items: center; width: 18px; height: 18px; border-radius: 5px;
+  border: 0; background: transparent; color: var(--sp-text-muted); cursor: pointer;
+}
+.vf-fav-tools button:hover { background: rgba(255, 255, 255, 0.08); color: var(--sp-text); }
+.vf-fav-tools button.is-del:hover { color: #ff8a80; }
+
+/* Navegação do intervalo no ar */
+.vf-nav { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; }
+.vf-dots { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.vf-dot {
+  min-width: 26px; height: 24px; padding: 0 6px; border-radius: 7px;
+  border: 1px solid var(--sp-border-strong); background: transparent; color: var(--sp-text-muted);
+  font: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer;
+}
+.vf-dot.is-on { background: var(--sp-danger); border-color: transparent; color: #fff; }
+
+/* Barra "no ar" (rodapé): leitura livre pelo capítulo */
+.vf-live {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 10px; border-radius: 14px;
+  background: #1d1416; border: 1px solid rgba(231, 76, 60, 0.55);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+}
+.vf-live-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.vf-live-ref { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; }
+.vf-live-ref small { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; color: var(--sp-text-faint); }
+.vf-live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sp-danger); animation: vf-pulse 1.4s ease-in-out infinite; }
+.vf-live-text {
+  font-size: 12.5px; line-height: 1.45; color: var(--sp-text-muted);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.vf-live-nav { display: grid; grid-template-columns: 52px 1fr 52px; gap: 8px; align-items: center; }
+.vf-live-step { height: 44px; padding: 0; border-radius: 11px; }
+.vf-live-step.is-next { background: var(--sp-primary); border-color: transparent; color: #fff; }
+.vf-live-step.is-next:hover { background: var(--sp-primary-hover); }
+.vf-strip {
+  display: flex; gap: 4px; overflow-x: auto; padding: 2px 0;
+  scrollbar-width: none;
+}
+.vf-strip::-webkit-scrollbar { display: none; }
+.vf-strip .vf-dot { flex: none; }
+
+/* Vazio (compacto) */
+.vf-empty {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-radius: 10px; border: 1px dashed var(--sp-border-strong);
+  color: var(--sp-text-muted); font-size: 12px;
+}
+.vf-empty b { color: #fbbf24; }
+
+/* Configurações */
+.vf-details summary {
+  cursor: pointer; color: var(--sp-text-muted); font-size: 12px; font-weight: 600; list-style: none;
+}
+.vf-details summary::before { content: '▸ '; }
+.vf-details[open] summary::before { content: '▾ '; }
+.vf-details > div { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.vf-check {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px;
+  border: 1px solid var(--sp-border); background: var(--sp-bg-elevated); cursor: pointer;
+}
+.vf-check.is-on { border-color: rgba(72, 52, 212, 0.7); background: rgba(72, 52, 212, 0.1); }
+.vf-check input { accent-color: var(--sp-primary); }
+.vf-field { display: flex; flex-direction: column; gap: 5px; font-size: 11.5px; color: var(--sp-text-muted); }
+.vf-range-head { display: flex; justify-content: space-between; }
+.vf-range-head b { color: var(--sp-text); font-variant-numeric: tabular-nums; }
+.vf input[type='range'] { width: 100%; accent-color: var(--sp-primary); }
+
+/* Aviso "desfazer" */
+.vf-toast.is-ok { background: rgba(46, 204, 113, 0.16); color: #8ff0b4; }
+.vf-toast {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 8px 8px 8px 12px; border-radius: 10px;
+  background: #2a2f3a; color: var(--sp-text); font-size: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Rodapé fixo */
+.vf-foot {
+  position: sticky; bottom: 0;
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 10px 14px 14px;
+  background: linear-gradient(to top, var(--sp-bg) 75%, transparent);
+}
+
+@media (max-width: 380px) {
+  .vf-books { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Só digitar — aviso por cima do painel, igual ao painel de Bíblia do app */
+.vf-jump {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  padding: 24px; text-align: center;
+  background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+}
+.vf-jump-hint { font-size: 13px; opacity: 0.85; }
+.vf-jump-title { font-size: 28px; font-weight: 700; }
+.vf-jump-typed { font-size: 22px; font-weight: 700; display: flex; align-items: flex-end; gap: 8px; min-height: 30px; }
+.vf-jump-caret { width: 12px; height: 1px; margin-bottom: 6px; background: #fff; animation: vf-blink 1s steps(1) infinite; }
+.vf-jump-sub { font-size: 13px; opacity: 0.35; max-width: 100%; }
+@keyframes vf-blink { 50% { opacity: 0; } }
+
+/* ── Formato do painel de Bíblia do app: Livros · Capítulo · Versículo · Texto ──
+   Estreito: um embaixo do outro (Capítulo e Versículo lado a lado).
+   Largo: Livros/Capítulo/Versículo à esquerda e o Texto à direita. */
+.vf .vf-version { width: auto; max-width: 200px; font-weight: 700; }
+.vf-bible {
+  display: grid; gap: 1px; border-radius: 12px; overflow: hidden;
+  background: var(--sp-border); border: 1px solid var(--sp-border);
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "books books" "ch vs" "text text";
+}
+@media (min-width: 820px) {
+  .vf-bible {
+    grid-template-columns: 1fr 1fr 1.15fr;
+    grid-template-areas: "books books text" "ch vs text";
+  }
+  /* O Texto acompanha a altura das colunas da esquerda e rola por dentro
+     (altura base 0: a lista não estica a linha da grade). */
+  .vf-bible .vf-pane.is-text .vf-verses { max-height: none; flex: 1 1 0; height: 0; min-height: 0; }
+}
+.vf-pane { background: var(--sp-bg); display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.vf-pane.is-books { grid-area: books; }
+.vf-pane.is-chapters { grid-area: ch; }
+.vf-pane.is-verses { grid-area: vs; }
+.vf-pane.is-text { grid-area: text; }
+.vf-pane-tab {
+  display: flex; align-items: center; gap: 7px; align-self: flex-start;
+  padding: 8px 14px; font-size: 13px; color: var(--sp-text);
+  background: var(--sp-bg-inset); border-bottom: 1px solid var(--sp-border);
+}
+.vf-pane-tab svg, .vf-hash { color: var(--sp-text-muted); }
+.vf-pane-label {
+  padding: 10px 10px 6px; font-size: 11px; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--sp-text-faint);
+}
+
+/* Livros: sigla grande, nome pequeno */
+.vf-tiles {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 4px; padding: 8px;
+}
+.vf-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 0; height: 44px; padding: 2px 3px; border-radius: 7px;
+  border: 1px solid var(--sp-border); background: var(--sp-bg-elevated);
+  color: var(--sp-text); font: inherit; cursor: pointer; line-height: 1.05;
+}
+.vf-tile b { font-size: 16px; font-weight: 600; }
+.vf-tile small {
+  max-width: 100%; font-size: 10px; color: var(--sp-text-faint);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.vf-tile:hover { border-color: var(--sp-border-strong); }
+.vf-tile.is-on {
+  border-color: var(--sp-primary);
+  background: color-mix(in srgb, var(--sp-primary) 28%, var(--sp-bg-elevated));
+}
+
+/* Capítulo / Versículo: grades de números */
+.vf-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+  gap: 4px; padding: 0 8px 10px; max-height: 220px; overflow-y: auto; overscroll-behavior: contain;
+}
+.vf-grid.is-big { grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); }
+.vf-cell {
+  height: 34px; border-radius: 7px; border: 1px solid var(--sp-border);
+  background: var(--sp-bg-elevated); color: var(--sp-text);
+  font: inherit; font-size: 15px; font-weight: 500; cursor: pointer;
+}
+.vf-grid.is-big .vf-cell { height: 40px; }
+.vf-cell:hover { border-color: var(--sp-border-strong); }
+.vf-cell.is-on {
+  border-color: var(--sp-primary); color: #fff;
+  background: color-mix(in srgb, var(--sp-primary) 35%, var(--sp-bg-elevated));
+}
+.vf-pane.is-chapters .vf-cell.is-on {
+  border-color: #e74c3c; color: #ff8a80;
+  background: rgba(231, 76, 60, 0.14);
+}
+
+/* Texto */
+.vf-text-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 8px 12px; border-bottom: 1px solid var(--sp-border);
+  font-size: 13px; color: var(--sp-text-muted);
+}
+.vf-pane.is-text .vf-verses { margin: 0; padding: 6px; max-height: 340px; overflow-y: auto; overscroll-behavior: contain; }
+.vf-pane.is-text .vf-verse-text { font-size: 14px; }
+
+/* Favorito de vários versículos: Juntos / 1 a 1 */
+.vf .vf-fav-tools .vf-fav-mode {
+  width: auto; padding: 0 5px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.02em;
+  text-transform: uppercase; color: var(--sp-text-faint);
+}
+.vf .vf-fav-tools .vf-fav-mode.is-on { color: var(--sp-primary); }
+
+/* ── Estilo Holyrics, minimalista ───────────────────────────────────────────
+   Livros com a cor do grupo (suave; forte quando escolhido); Capítulo e
+   Versículo em blocos grandes na cor do livro aberto; Texto à esquerda. */
+@media (min-width: 820px) {
+  .vf-bible {
+    position: relative;
+    grid-template-columns: var(--vf-text-w, 34%) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "text books books" "text ch vs";
+  }
+}
+.vf-tile {
+  height: 46px; border-radius: 6px; border: 0;
+  background: color-mix(in srgb, var(--cat) 20%, var(--sp-bg));
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--cat) 75%, transparent);
+  transition: background 0.12s;
+}
+.vf-tile b { font-size: 17px; font-weight: 500; letter-spacing: 0.01em; }
+.vf-tile small { color: color-mix(in srgb, var(--sp-text) 60%, transparent); }
+.vf-tile:hover { background: color-mix(in srgb, var(--cat) 34%, var(--sp-bg)); }
+.vf-tile.is-on { background: var(--cat); box-shadow: none; }
+.vf-tile.is-on b, .vf-tile.is-on small { color: #fff; }
+
+.vf-grid { padding: 8px; gap: 3px; max-height: 240px; }
+.vf-grid, .vf-grid.is-big { grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); }
+.vf-cell, .vf-grid.is-big .vf-cell {
+  height: 46px; border-radius: 5px; border: 0;
+  font-size: 18px; font-weight: 400; color: #fff;
+  background: color-mix(in srgb, var(--cat) 55%, var(--sp-bg));
+}
+.vf-pane.is-verses .vf-cell { background: color-mix(in srgb, var(--cat) 32%, var(--sp-bg)); }
+.vf-cell:hover, .vf-pane.is-verses .vf-cell:hover { background: color-mix(in srgb, var(--cat) 75%, var(--sp-bg)); }
+/* Escolhido: bloco escuro, como no Holyrics */
+.vf-cell.is-on, .vf-pane.is-chapters .vf-cell.is-on, .vf-pane.is-verses .vf-cell.is-on {
+  background: #15171b; color: #fff; border: 0;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cat) 80%, transparent);
+}
+
+/* Texto: versículos em lista limpa, marcado em azul suave */
+.vf-pane.is-text .vf-verse.is-on { background: color-mix(in srgb, var(--sp-primary) 22%, transparent); }
+
+/* Histórico */
+.vf-history { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.vf-hist {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 1px;
+  padding: 4px 10px; border-radius: 7px; border: 1px solid var(--sp-border);
+  background: var(--sp-bg); color: var(--sp-text-muted); font: inherit; font-size: 11px; cursor: pointer;
+}
+.vf-hist b { font-size: 12px; font-weight: 600; color: var(--sp-text); }
+.vf-hist:hover { border-color: var(--sp-border-strong); color: var(--sp-text); }
+
+.vf-type-hint { text-align: center; font-size: 11px; color: var(--sp-text-faint); }
+
+/* ── Minimalista: topo enxuto ─────────────────────────────────────────────── */
+.vf-body { gap: 10px; padding: 10px 12px 8px; }
+.vf-top { gap: 10px; }
+.vf-title { font-size: 13px; font-weight: 600; margin-right: auto; }
+.vf .vf-lists select, .vf .vf-lists input[type='text'] { height: 30px; font-size: 12.5px; }
+.vf .vf-lists .vf-btn.is-icon { width: 30px; height: 30px; }
+.vf-empty { padding: 6px 10px; font-size: 12px; }
+.vf-picker { padding: 8px; gap: 8px; border-radius: 12px; }
+.vf-picker-head { gap: 6px; }
+.vf .vf-picker-head .vf-version { width: auto; max-width: 170px; height: 34px; font-size: 12.5px; flex-shrink: 0; }
+.vf-picker-head .vf-spot { flex: 1; min-width: 0; }
+.vf-shortcut { height: 34px; }
+
+/* Zoom do painel */
+.vf-zoom {
+  display: flex; align-items: center; border: 1px solid var(--sp-border); border-radius: 8px; overflow: hidden;
+}
+.vf-zoom button {
+  height: 24px; min-width: 28px; padding: 0 6px; border: 0; background: transparent;
+  color: var(--sp-text-muted); font: inherit; font-size: 11.5px; font-weight: 700; cursor: pointer;
+}
+.vf-zoom button:hover:not(:disabled) { background: var(--sp-bg-elevated); color: var(--sp-text); }
+.vf-zoom button:disabled { opacity: 0.35; cursor: default; }
+.vf-zoom .vf-zoom-val { min-width: 42px; font-weight: 600; font-size: 11px; border-inline: 1px solid var(--sp-border); }
+
+/* Histórico em uma linha só */
+.vf-history { align-items: center; gap: 4px; }
+.vf-history-label { flex-shrink: 0; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sp-text-faint); margin-right: 2px; }
+.vf-hist { flex-direction: row; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 11.5px; }
+.vf-hist b { font-size: 11.5px; color: var(--sp-text-muted); font-weight: 700; }
+
+/* Favoritar logo acima do texto */
+.vf .vf-fav-now { margin: 6px 6px 0; height: 32px; justify-content: center; gap: 6px; font-size: 12.5px; }
+.vf .vf-fav-now small { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.75; }
+
+/* No ar: botão pequeno no topo (substitui o quadro de baixo) */
+.vf-onair {
+  display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px;
+  border-radius: 999px; border: 0; cursor: pointer;
+  background: #d63031; color: #fff; font: inherit; font-size: 11px; font-weight: 700;
+}
+.vf-onair:hover { background: #e74c3c; }
+.vf-onair-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: vf-blink 1.2s steps(1) infinite; }
+
+/* Versículo que está no ar, na lateral e na grade */
+.vf-pane.is-text .vf-verse.is-air { box-shadow: inset 3px 0 0 #e74c3c; background: rgba(231, 76, 60, 0.12); }
+.vf-pane.is-verses .vf-cell.is-air { box-shadow: inset 0 0 0 2px #e74c3c; }
+.vf-verse-pick { user-select: none; }
+
+/* Favoritar fixo: mesma altura sempre; cinza parado, azul quando há marcação */
+.vf .vf-fav-now { flex-shrink: 0; }
+.vf .vf-fav-now.is-idle {
+  background: transparent; border: 1px dashed var(--sp-border-strong);
+  color: var(--sp-text-faint); cursor: default; opacity: 1;
+}
+
+/* ── Seções redimensionáveis ────────────────────────────────────────────── */
+/* Divisória: arraste para ajustar; duplo clique volta ao padrão. */
+.vf-grip {
+  flex: none; display: flex; align-items: center; justify-content: center;
+  border-radius: 999px; touch-action: none; user-select: none;
+}
+.vf-grip.is-y { width: 100%; height: 7px; cursor: ns-resize; }
+/* Divisória vertical: área de arrasto larga e linha sempre visível (a barra de
+   rolagem do Texto fica colada, então a alça precisa se destacar). */
+.vf-grip.is-x { width: 9px; height: 100%; cursor: col-resize; }
+.vf-grip span {
+  border-radius: 999px; background: var(--sp-border-strong); opacity: 0.5;
+  transition: background 0.12s, opacity 0.12s;
+}
+.vf-grip.is-y span { width: 46%; height: 2px; }
+.vf-grip.is-x span { width: 2px; height: 46%; }
+.vf-grip:hover span, .vf-grip:active span { background: var(--sp-primary); opacity: 1; }
+.vf-grip:focus-visible { outline: none; }
+.vf-grip:focus-visible span { background: var(--sp-primary); opacity: 1; }
+.vf-grip.is-split {
+  display: none; position: absolute; top: 0; bottom: 0; height: auto;
+  left: calc(var(--vf-text-w, 34%) - 6px); z-index: 6;
+}
+@media (min-width: 820px) {
+  .vf-grip.is-split { display: flex; }
+  .vf-grip.is-narrow-only { display: none; }
+}
+
+/* Altura de cada seção: sempre definida, para o conteúdo preencher a área.
+   Grade uniforme: todas as colunas e linhas têm o mesmo tamanho e as linhas
+   dividem a altura da seção (sem esticar só a última linha). */
+.vf-tiles, .vf-grid {
+  display: grid; align-content: stretch;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  overflow-y: auto; overscroll-behavior: contain;
+}
+.vf-tiles { gap: 4px; padding: 8px; height: var(--vf-books-h, 300px); max-height: none; grid-auto-rows: minmax(36px, 1fr); }
+.vf-grid {
+  gap: 3px; padding: 8px; height: var(--vf-grid-h, 240px); max-height: none;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  grid-auto-rows: minmax(34px, 1fr);
+}
+.vf .vf-grid.is-big { grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); grid-auto-rows: minmax(40px, 1fr); }
+.vf .vf-tiles > .vf-tile,
+.vf .vf-grid > .vf-cell {
+  width: auto; height: auto; min-width: 0; min-height: 0; overflow: hidden;
+  align-self: stretch; justify-self: stretch; container-type: size;
+}
+/* Fonte acompanha o tamanho real do botão (container queries) */
+.vf .vf-tiles > .vf-tile b { font-size: clamp(13px, min(34cqh, 42cqw), 44px); }
+.vf .vf-tiles > .vf-tile small { font-size: clamp(9px, min(20cqh, 26cqw), 22px); }
+.vf .vf-grid > .vf-cell {
+  display: grid; place-items: center;
+  padding: 0; line-height: 1; overflow: hidden;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(13px, min(46cqh, 48cqw), 30px);
+}
+/* Botão baixo: só a sigla (o nome completo continua no tooltip) */
+@container (max-height: 44px) {
+  .vf-tile small { display: none; }
+}
+
+/* Barras de rolagem discretas: invisíveis paradas, aparecem ao usar.
+   O espaço continua reservado (scrollbar-gutter) para o conteúdo não pular. */
+.vf-verses, .vf-tiles, .vf-grid {
+  scrollbar-width: thin; scrollbar-color: transparent transparent;
+  scrollbar-gutter: stable;
+}
+.vf-verses.is-scrolling, .vf-tiles.is-scrolling, .vf-grid.is-scrolling,
+.vf-verses:hover, .vf-tiles:hover, .vf-grid:hover,
+.vf-verses:focus-within, .vf-tiles:focus-within, .vf-grid:focus-within {
+  scrollbar-color: color-mix(in srgb, var(--sp-text-muted) 70%, transparent) transparent;
+}
+.vf-verses::-webkit-scrollbar,
+.vf-tiles::-webkit-scrollbar,
+.vf-grid::-webkit-scrollbar { width: 9px; height: 9px; }
+.vf-verses::-webkit-scrollbar-track,
+.vf-tiles::-webkit-scrollbar-track,
+.vf-grid::-webkit-scrollbar-track { background: transparent; }
+.vf-verses::-webkit-scrollbar-thumb,
+.vf-tiles::-webkit-scrollbar-thumb,
+.vf-grid::-webkit-scrollbar-thumb {
+  background: transparent; border-radius: 999px;
+  border: 2px solid transparent; background-clip: padding-box;
+}
+.vf-verses.is-scrolling::-webkit-scrollbar-thumb,
+.vf-tiles.is-scrolling::-webkit-scrollbar-thumb,
+.vf-grid.is-scrolling::-webkit-scrollbar-thumb,
+.vf-verses:hover::-webkit-scrollbar-thumb,
+.vf-tiles:hover::-webkit-scrollbar-thumb,
+.vf-grid:hover::-webkit-scrollbar-thumb,
+.vf-verses:focus-within::-webkit-scrollbar-thumb,
+.vf-tiles:focus-within::-webkit-scrollbar-thumb,
+.vf-grid:focus-within::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--sp-text-muted) 65%, transparent);
+  background-clip: padding-box;
+}
+@media (max-width: 819.98px) {
+  .vf-pane.is-text .vf-verses { height: var(--vf-text-h); max-height: var(--vf-text-h, 340px); }
+}
+
+/* Histórico em uma linha, com remoção por item e "Limpar" */
+.vf-history-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.vf-history-row .vf-history { flex: 1 1 auto; min-width: 0; }
+.vf-history-clear {
+  flex: none; padding: 2px 6px; border: 0; border-radius: 6px; background: transparent;
+  color: var(--sp-text-faint); font: inherit; font-size: 10.5px; font-weight: 600; cursor: pointer;
+}
+.vf-history-clear:hover { color: #ff8a80; background: rgba(231, 76, 60, 0.12); }
+/* × do histórico: flutua no canto, igual ao dos favoritos */
+.vf-history { padding-top: 8px; padding-right: 8px; }
+.vf-hist-item { position: relative; display: inline-flex; align-items: center; flex: none; }
+.vf-hist-del {
+  position: absolute; top: -6px; right: -6px; z-index: 2;
+  display: none; place-items: center; width: 18px; height: 18px; padding: 0;
+  border-radius: 5px; border: 1px solid var(--sp-border-strong);
+  background: #2a2f3a; color: var(--sp-text-muted); cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.vf-hist-item:hover .vf-hist-del,
+.vf-hist-item:focus-within .vf-hist-del { display: grid; }
+.vf-hist-del:hover { background: rgba(255, 255, 255, 0.08); color: #ff8a80; }
