@@ -7,6 +7,12 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## [Não publicado]
 
+### Documentação
+
+- README redesenhado com banner, capturas reais do painel e tabelas de
+  referência.
+- Título da página da UI atualizado para **Bíblia PRO**.
+
 ## [1.0.0] — 2026-11-16
 
 Primeira versão pública, publicada como **Bíblia PRO**.

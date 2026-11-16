@@ -9,6 +9,18 @@
     "type": "git",
     "url": "https://github.com/ariellaureanorosas/biblia-pro.git"
   },
+  "homepage": "https://github.com/ariellaureanorosas/biblia-pro#readme",
+  "bugs": {
+    "url": "https://github.com/ariellaureanorosas/biblia-pro/issues"
+  },
+  "keywords": [
+    "spresenter",
+    "plugin",
+    "bible",
+    "biblia",
+    "projecao",
+    "favoritos"
+  ],
   "type": "module",
   "scripts": {
     "build:code": "vite build --config vite.code.config.ts",
