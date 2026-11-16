@@ -51,11 +51,24 @@ jobs:
           echo "id=$(node -p "require('./manifest.json').id")" >> "$GITHUB_OUTPUT"
           echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
 
+      - name: Preparar notas da release
+        id: notes
+        shell: bash
+        run: |
+          file=".github/release-notes/${GITHUB_REF_NAME}.md"
+          if [ -f "$file" ]; then
+            echo "body_path=$file" >> "$GITHUB_OUTPUT"
+            echo "Notas: $file"
+          else
+            echo "Sem notas dedicadas; usando notas geradas automaticamente."
+          fi
+
       - name: Criar GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: Bíblia PRO ${{ steps.manifest.outputs.version }}
           tag_name: ${{ github.ref_name }}
+          body_path: ${{ steps.notes.outputs.body_path }}
+          generate_release_notes: ${{ steps.notes.outputs.body_path == '' }}
           files: release/${{ steps.manifest.outputs.id }}-${{ steps.manifest.outputs.version }}.zip
-          generate_release_notes: true
           fail_on_unmatched_files: true

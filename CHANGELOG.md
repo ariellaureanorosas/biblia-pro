@@ -12,6 +12,7 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 - README redesenhado com banner, capturas reais do painel e tabelas de
   referência.
 - Título da página da UI atualizado para **Bíblia PRO**.
+- Notas da release v1.0.0 redesenhadas e template para releases futuras.
 
 ## [1.0.0] — 2026-11-16
 

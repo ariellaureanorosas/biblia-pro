@@ -54,6 +54,12 @@ git push origin v1.0.1
 
 ### 4. GitHub Release
 
+Antes da tag, crie as notas dedicadas em
+`.github/release-notes/vX.Y.Z.md` usando
+[`.github/release-notes/TEMPLATE.md`](../.github/release-notes/TEMPLATE.md) como
+base. Quando o arquivo existe, o workflow usa esse conteúdo; sem ele, cai nas
+notas geradas automaticamente pelo GitHub.
+
 O workflow `.github/workflows/release.yml` é disparado por tags `v*` e:
 
 1. Instala dependências com `npm ci`.
