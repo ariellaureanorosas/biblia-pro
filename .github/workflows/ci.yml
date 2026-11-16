@@ -38,6 +38,9 @@ jobs:
       - name: Testes (unidade)
         run: npm test
 
+      - name: Testes (componente)
+        run: npm run test:component
+
       - name: Verificar tipos
         run: npm run typecheck
 

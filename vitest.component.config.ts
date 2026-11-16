@@ -10,8 +10,10 @@ export default defineConfig({
     },
   },
   test: {
-    // Testes de componente: jsdom + React Testing Library.
-    environment: 'jsdom',
+    // Testes de componente: happy-dom + React Testing Library.
+    // happy-dom não depende do undici (diferente do jsdom), então funciona
+    // no Node 24 do GitHub Actions.
+    environment: 'happy-dom',
     globals: true,
     setupFiles: ['./src/setupTests.ts'],
     include: ['src/**/*.component.test.{ts,tsx}'],
