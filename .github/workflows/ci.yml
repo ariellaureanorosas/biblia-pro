@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Typecheck, build e pacote
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificar tipos
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Empacotar
+        run: npm run package
+
+      - name: Ler versão do manifesto
+        id: manifest
+        run: |
+          echo "id=$(node -p "require('./manifest.json').id")" >> "$GITHUB_OUTPUT"
+          echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Publicar artifact do plugin
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.manifest.outputs.id }}-${{ steps.manifest.outputs.version }}
+          path: release/*.zip
+          if-no-files-found: error
+          retention-days: 14
