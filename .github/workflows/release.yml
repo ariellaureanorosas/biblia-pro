@@ -29,6 +29,12 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Testes
+        run: npm test
+
       - name: Verificar tipos
         run: npm run typecheck
 
@@ -56,12 +62,17 @@ jobs:
         shell: bash
         run: |
           file=".github/release-notes/${GITHUB_REF_NAME}.md"
-          if [ -f "$file" ]; then
-            echo "body_path=$file" >> "$GITHUB_OUTPUT"
-            echo "Notas: $file"
-          else
+          if [ ! -f "$file" ]; then
             echo "Sem notas dedicadas; usando notas geradas automaticamente."
+            exit 0
           fi
+          zip="release/${{ steps.manifest.outputs.slug }}-${{ steps.manifest.outputs.version }}.zip"
+          sha="$(sha256sum "$zip" | cut -d' ' -f1)"
+          size="$(stat -c%s "$zip")"
+          body="$RUNNER_TEMP/release-notes.md"
+          sed -e "s/{{SHA256}}/$sha/g" -e "s/{{SIZE}}/$size/g" "$file" > "$body"
+          echo "body_path=$body" >> "$GITHUB_OUTPUT"
+          echo "Notas: $file (sha256=$sha, size=$size)"
 
       - name: Criar GitHub Release
         uses: softprops/action-gh-release@v2

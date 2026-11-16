@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent, type ReactNode, type CSSProperties, type UIEvent as ReactUIEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, type CSSProperties, type UIEvent as ReactUIEvent } from 'react';
 import { postMessage, onMessage } from '@spresenter/plugin-sdk/ui';
 import { planFor, type OutputPlan } from './appConfig';
 import { TypeToJump } from './TypeToJump';
 import { Grip } from './Resizer';
+import { isTogether, refLabel, resolveVersion, shortVersion, stripTags } from './bibleRefs';
 import { useGridColumns } from './useGridColumns';
 
 // IMPORTANTE: o app abre esta UI num iframe `sandbox="allow-scripts"` — SEM
@@ -11,8 +12,6 @@ import { useGridColumns } from './useGridColumns';
 
 interface Verse { verse: number; text: string }
 interface Fav { id: string; version: string; abbrev: string; book: string; chapter: number; verses: Verse[]; together?: boolean }
-/** Favorito de vários versículos vai ao ar com todos juntos (a menos que o operador peça um por vez). */
-const isTogether = (f: Fav) => f.verses.length > 1 && f.together !== false;
 interface FavList { id: string; title: string; items: Fav[] }
 /** Versículo no ar (vem do code.ts). */
 interface LiveRef {
@@ -59,7 +58,6 @@ interface State {
 }
 
 interface Book { abbrev: string; name: string; chapters: number }
-interface Hit { version: string; abbrev: string; bookName: string; chapter: number; verse: number; text: string }
 
 // ── Bíblia instalada no app ───────────────────────────────────────────────
 // A UI é servida pelo próprio servidor do Spresenter, que libera CORS — as
@@ -100,27 +98,6 @@ function cachedBooks(version: string): Promise<Book[]> {
   return booksCache.get(version)!;
 }
 
-/** Versão curta para a etiqueta: "King James 1911" → "KJ1911"; "NVI" fica. */
-const shortVersion = (v: string) =>
-  v.length <= 5 ? v : v.split(/\s+/).map((w) => (/\d/.test(w) ? w : w[0].toUpperCase())).join('');
-
-const stripTags = (s: string) => s.replace(/<[^>]*>/g, '');
-
-/** "Salmos 23:1-3,5" — junta números seguidos em intervalos. */
-function refLabel(book: string, chapter: number, verses: { verse: number }[]): string {
-  if (!verses.length) return `${book} ${chapter}`;
-  const nums = [...verses.map((v) => v.verse)].sort((a, b) => a - b);
-  const parts: string[] = [];
-  let start = nums[0];
-  let prev = nums[0];
-  for (const n of [...nums.slice(1), Infinity]) {
-    if (n === prev + 1) { prev = n; continue; }
-    parts.push(start === prev ? `${start}` : `${start}-${prev}`);
-    start = prev = n;
-  }
-  return `${book} ${chapter}:${parts.join(',')}`;
-}
-
 // ── Ícones ────────────────────────────────────────────────────────────────
 const Icon = ({ d, size = 16 }: { d: ReactNode; size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -128,7 +105,6 @@ const Icon = ({ d, size = 16 }: { d: ReactNode; size?: number }) => (
   </svg>
 );
 const IcBook = <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></>;
-const IcPlay = <path d="M7 4l13 8-13 8z" fill="currentColor" />;
 const IcStar = <path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z" />;
 const IcTrash = <><path d="M3 6h18" /><path d="M8 6V4h8v2" /><path d="M19 6l-1 14H6L5 6" /></>;
 const IcLeft = <path d="M15 18l-6-6 6-6" />;
@@ -138,7 +114,6 @@ const IcEdit = <><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l
 const IcX = <path d="M18 6L6 18M6 6l12 12" />;
 const IcCheck = <path d="M20 6L9 17l-5-5" />;
 const IcList = <><path d="M10 6h11M10 12h11M10 18h11" /><path d="M4 6h1M4 12h1M4 18h1" /></>;
-const IcSearch = <><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.3-4.3" /></>;
 
 type Undo =
   | { kind: 'fav'; listId: string; fav: Fav; at: number }
@@ -169,13 +144,6 @@ interface LastRef { abbrev: string; chapter: number; version?: string; picked?: 
 
 /** Histórico de referências abertas (guardado nas configurações do plugin). */
 interface HistItem { version: string; abbrev: string; name: string; chapter: number; verses: number[] }
-
-/** Padrão escolhido no plugin → a que o app projetou por último → 'nvi' →
- *  primeira instalada (mesma reserva do app). Não instalada é ignorada. */
-function resolveVersion(installed: string[], ...prefs: (string | null | undefined)[]): string {
-  for (const c of [...prefs, 'nvi']) if (c && installed.includes(c)) return c;
-  return installed[0] ?? '';
-}
 
 const onEnter = (fn: () => void) => (e: ReactKeyboardEvent) => {
   if (e.key === 'Enter') { e.preventDefault(); fn(); }
@@ -289,6 +257,8 @@ export function App() {
   const systemVersion = st?.learnedVersion ?? null;
   const defaultVersion = versions.length ? resolveVersion(versions, savedVersion, systemVersion) : '';
   useEffect(() => {
+    // Sincroniza a versão padrão vinda do estado do plugin.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (defaultVersion) setVersion(defaultVersion);
   }, [defaultVersion]);
 
@@ -329,9 +299,10 @@ export function App() {
 
   // Números do capítulo no ar (faixa do rodapé).
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!live) { setLiveVerses([]); return; }
     cachedChapter(live.version, live.abbrev, live.chapter).then(setLiveVerses).catch(() => setLiveVerses([]));
-  }, [live?.version, live?.abbrev, live?.chapter]);
+  }, [live]);
 
   const showVerse = async (c: Cursor) => {
     const vs = await cachedChapter(c.version, c.abbrev, c.chapter);
@@ -365,11 +336,6 @@ export function App() {
     // Os quadros de baixo (Livros · Capítulo · Versículo · Texto) mostram o favorito.
     const b = books.find((x) => x.abbrev === f.abbrev) ?? { abbrev: f.abbrev, name: f.book, chapters: 0 };
     void openChapter(b, f.chapter, f.verses.map((v) => v.verse), f.version);
-  };
-
-  const goTo = (verse: number) => {
-    const c = cursor.current;
-    if (c) void showVerse({ ...c, verse, group: undefined });
   };
 
   const stepVerse = async (dir: 1 | -1) => {
@@ -439,7 +405,6 @@ export function App() {
       return;
     }
     scrollToVerse();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [verses]);
 
   const flash = (text: string) => {

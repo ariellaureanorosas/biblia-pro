@@ -5,12 +5,32 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
-## [Não publicado]
+## [1.0.1] — 2026-11-16
+
+Release de manutenção: alinha tag, pacote e notas e adiciona a base de
+qualidade (testes e lint) que faltava na primeira publicação.
+
+### Adicionado
+
+- 19 testes unitários com Vitest para a lógica pura do painel (rótulos de
+  referência, resolução de versão, favoritos e normalização de busca).
+- ESLint 10 + typescript-eslint no fluxo local e no CI.
+- Workflow **CodeQL** para análise de segurança em JavaScript/TypeScript.
+- `CODEOWNERS`, labels de manutenção e Dependabot agrupado por minor/patch.
 
 ### Alterado
 
 - Pacote de distribuição renomeado para `biblia-pro-<versão>.zip`, usando o
   `name` do `package.json` como base.
+- CI agora executa **lint**, **testes**, **typecheck**, build e empacotamento.
+- Dependabot ignora atualizações major, que exigem migração manual.
+
+### Corrigido
+
+- A tag `v1.0.0` apontava para um commit anterior ao pacote publicado. A
+  `v1.0.1` publica código, tag e asset a partir do mesmo commit.
+- Lógica duplicada entre `App.tsx` e `TypeToJump.tsx` extraída para
+  `src/ui/bibleRefs.ts`.
 
 ### Documentação
 
@@ -57,3 +77,4 @@ Primeira versão pública, publicada como **Bíblia PRO**.
   automaticamente**.
 
 [1.0.0]: https://github.com/ariellaureanorosas/biblia-pro/releases/tag/v1.0.0
+[1.0.1]: https://github.com/ariellaureanorosas/biblia-pro/releases/tag/v1.0.1

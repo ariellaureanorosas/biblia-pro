@@ -26,6 +26,9 @@ O SDK de plugins é instalado a partir de `sdk/spresenter-plugin-sdk.tgz`
 | --- | --- |
 | `npm run dev` | Build em modo watch do código e da UI, em paralelo. |
 | `npm run build` | Build de produção: `dist/code.js` + `dist/ui/`. |
+| `npm run lint` | ESLint em `src/`, `scripts/` e configs. |
+| `npm run test` | Testes unitários com Vitest. |
+| `npm run test:watch` | Testes em modo watch. |
 | `npm run typecheck` | `tsc --noEmit` em todo o projeto. |
 | `npm run package` | `build` + zip em `release/<nome>-<versão>.zip`. |
 | `npm run watch:code` | Watch apenas da thread de lógica. |
@@ -46,7 +49,7 @@ O SDK de plugins é instalado a partir de `sdk/spresenter-plugin-sdk.tgz`
 npm run package
 ```
 
-Instale `release/biblia-pro-1.0.0.zip` em **Configurações → Plugins**.
+Instale `release/biblia-pro-1.0.1.zip` em **Configurações → Plugins**.
 
 ## Build por dentro
 
@@ -111,6 +114,8 @@ npm run package
 
 ## Checklist antes de abrir um PR
 
+- [ ] `npm run lint` sem erros
+- [ ] `npm run test` sem falhas
 - [ ] `npm run typecheck` sem erros
 - [ ] `npm run build` sem erros
 - [ ] `npm run package` gera o zip

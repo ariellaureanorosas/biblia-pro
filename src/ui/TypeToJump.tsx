@@ -9,12 +9,11 @@
 //    passaria do máximo, confirma sozinho; Espaço, Enter ou Tab confirmam;
 //  • Backspace apaga; Esc cancela.
 import { useEffect, useRef, useState } from 'react';
+import { fold } from './bibleRefs';
 
 interface Book { abbrev: string; name: string; chapters: number }
 interface Verse { verse: number; text: string }
 type Stage = 'book' | 'chapter' | 'verse';
-
-const fold = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^\w\s]/gi, '');
 
 interface Props {
   books: Book[];

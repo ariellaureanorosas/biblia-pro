@@ -37,9 +37,10 @@ aponte para a pasta do repositório. Detalhes em [`docs/DEVELOPMENT.md`](docs/DE
 3. Rode as verificações locais:
 
    ```bash
+   npm run lint
+   npm run test
    npm run typecheck
    npm run build
-   npm run package
    ```
 
 4. Teste o painel no Spresenter (instale o `.zip` de `release/` ou recarregue a

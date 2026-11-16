@@ -1,0 +1,7 @@
+# Mantenedor responsável por revisar e aprovar mudanças.
+* @ariellaureanorosas
+
+# Distribuição e releases exigem revisão extra.
+/.github/workflows/ @ariellaureanorosas
+/manifest.json @ariellaureanorosas
+/scripts/ @ariellaureanorosas

@@ -554,5 +554,4 @@ spresenter.ui.onmessage = async (raw: unknown) => {
   pushState();
 };
 
-// eslint-disable-next-line no-console
 console.log('Plugin loaded:', spresenter.manifest.name);

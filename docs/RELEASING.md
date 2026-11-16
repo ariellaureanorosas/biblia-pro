@@ -15,7 +15,7 @@ A versão aparece em **dois lugares** e precisa ficar sincronizada:
 - `package.json` → `version`
 
 O nome do zip é derivado do `name` do `package.json` (ex.: `biblia-pro`):
-`release/<nome>-<versão>.zip`, por exemplo `biblia-pro-1.0.0.zip`.
+`release/<nome>-<versão>.zip`, por exemplo `biblia-pro-1.0.1.zip`.
 
 ## Fluxo de release
 
@@ -35,12 +35,20 @@ Atualize o `CHANGELOG.md`:
 ### 2. Verifica e empacota
 
 ```bash
+npm run lint
+npm run test
 npm run typecheck
 npm run build
 npm run package
 ```
 
-Confirme o zip em `release/biblia-pro-<versão>.zip`.
+Confirme o zip em `release/biblia-pro-<versão>.zip` e registre o checksum:
+
+```bash
+sha256sum release/biblia-pro-1.0.1.zip
+```
+
+Inclua o valor nas notas da release (Windows: `Get-FileHash` com `-Algorithm SHA256`).
 
 ### 3. Commita e cria a tag
 
@@ -58,12 +66,13 @@ Antes da tag, crie as notas dedicadas em
 `.github/release-notes/vX.Y.Z.md` usando
 [`.github/release-notes/TEMPLATE.md`](../.github/release-notes/TEMPLATE.md) como
 base. Quando o arquivo existe, o workflow usa esse conteúdo; sem ele, cai nas
-notas geradas automaticamente pelo GitHub.
+notas geradas automaticamente pelo GitHub. As notas podem usar `{{SIZE}}` e
+`{{SHA256}}`, preenchidos pelo workflow com os dados do zip publicado.
 
 O workflow `.github/workflows/release.yml` é disparado por tags `v*` e:
 
 1. Instala dependências com `npm ci`.
-2. Roda `npm run package`.
+2. Roda lint, testes, typecheck e `npm run package`.
 3. Cria a Release anexando o zip gerado.
 
 Se precisar publicar manualmente:
@@ -79,6 +88,8 @@ gh release create v1.0.1 release/biblia-pro-1.0.1.zip \
 `.github/workflows/ci.yml` roda em todo push para `main` e em pull requests:
 
 - `npm ci`
+- `npm run lint`
+- `npm test`
 - `npm run typecheck`
 - `npm run build`
 - `npm run package`
@@ -101,6 +112,8 @@ O binário é distribuído pelas **Releases**, não pelo repositório.
 
 - [ ] `manifest.json` e `package.json` com a mesma versão
 - [ ] `CHANGELOG.md` atualizado
+- [ ] `npm run lint` limpo
+- [ ] `npm run test` sem falhas
 - [ ] `npm run typecheck` limpo
 - [ ] `npm run build` limpo
 - [ ] `npm run package` gerou o zip

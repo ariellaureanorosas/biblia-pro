@@ -25,6 +25,16 @@
 
 - O que exige ação de quem atualiza.
 
+## 🔐 Verificação do pacote
+
+| Item | Valor |
+| :-- | :-- |
+| Arquivo | `biblia-pro-X.Y.Z.zip` |
+| Tamanho | {{SIZE}} bytes |
+| SHA-256 | `{{SHA256}}` |
+
+> `{{SIZE}}` e `{{SHA256}}` são preenchidos pelo workflow de release.
+
 ## 🚀 Instalação
 
 1. Baixe o arquivo **`biblia-pro-X.Y.Z.zip`** abaixo.
@@ -38,3 +48,4 @@
 </p>
 
 **Full Changelog**: https://github.com/ariellaureanorosas/biblia-pro/commits/vX.Y.Z
+
